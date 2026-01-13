@@ -26,3 +26,5 @@ console.log(`Data Types Summary:
 - Is Student: ${isStudent} (Type: ${typeof isStudent})
 - Height: ${height} (Type: ${typeof height})
 - Address: ${address} (Type: ${typeof address})`);
+
+// End of Data Types Summary
