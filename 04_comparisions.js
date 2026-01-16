@@ -50,7 +50,7 @@ console.log("Using loose equality (==):", nullValue == zeroValue); // false
 console.log("Using strict equality (===):", nullValue === zeroValue); // false  
 
 // Comparing empty string and boolean false
-console.log("\nComparrision of empty string and boolean false:");   
+console.log("\nComparision of empty string and boolean false:");   
 let emptyString = "";   
 let falseBoolean = false;
 console.log(`Empty String: '${emptyString}' (Type: ${typeof emptyString})`);

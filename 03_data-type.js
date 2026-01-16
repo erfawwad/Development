@@ -1,5 +1,5 @@
 "use-strict"; 
-// Treat all Jacascript code as modern
+// Treat all Javascript code as modern
 
 // Data Types in JavaScript
 
