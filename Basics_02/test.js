@@ -7,4 +7,8 @@ console.log('A:', A); // Output: A: 3
 console.log('B:', B); // Output: B: 2
 console.log('C:', C); // Output: C: 4 // Output: C: 4
 console.log('D:', D); // Output: D: 2
-console.log('E:', E); // Output: E: 2
+console.log('E:', E); // Output: E: 3
+
+console.log('Sum of A, B, C, D, E:', A + B + C + D + E); // Output: Sum of A, B, C, D, E: 14
+
+console.log("Sorry for today too much office work");
