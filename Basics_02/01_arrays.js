@@ -107,4 +107,4 @@ let matrix = [
 console.log(matrix[1][2]); // Output: 6
 console.log(matrix[0]);    // Output: [1, 2, 3]
 
-// End of arrays in JavaScript
+// End of arrays in JavaScriptclear
