@@ -1,5 +1,18 @@
 // Scopes in JavaScript
 
+
+// Var is function-scoped, while let and const are block-scoped.
+// Variables declared with var are hoisted to the top of their function scope.
+// Variables declared with let and const are hoisted to the top of their block scope but are not initialized until their definition is evaluated (temporal dead zone).
+// Nested functions have access to variables declared in their outer scopes (lexical scoping).
+// Closures allow inner functions to retain access to their outer function's scope even after the outer function has returned.
+// var, let, and const have different behaviors in terms of scope and hoisting.
+// var: function-scoped, can be redeclared and updated.
+// let: block-scoped, cannot be redeclared in the same scope, can be updated.
+// const: block-scoped, cannot be redeclared or updated (must be initialized at declaration).
+
+// This code demonstrates different types of scopes in JavaScript.
+
 // Global Scope
 var globalVar = "I am a global variable";
 function globalScopeExample() {
