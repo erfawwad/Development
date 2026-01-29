@@ -35,3 +35,5 @@ For traditional function declarations, the entire function definition is hoisted
 For function expressions (functions assigned to variables), only the variable declaration is hoisted, not its assignment. This means the variable addTwo is known, but its value (the function) is not yet assigned at the top of the scope, leading to an error if you try to use it before the assignment (13:12, 13:41).
 Question: The video mentions that closures are an important interview topic. Based on the video's basic overview, what is a fundamental aspect of closures?
 Answer: The video provides a basic understanding of closures, stating that a fundamental aspect is when an inner function (child function) can access variables from its outer function (parent function), even after the outer function has finished executing (6:19). While the video clarifies there's more to closures than just this, it highlights this as the common initial understanding (6:24).
+
+Great
