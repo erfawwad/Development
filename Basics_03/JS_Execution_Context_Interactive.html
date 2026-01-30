@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Execution Engine | Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #334155; /* Slate 700 */
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Scrollbar for Code Block */
+        .code-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .code-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .code-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .highlight-line {
+            background-color: #e0e7ff; /* Indigo 100 */
+            border-left: 4px solid #4f46e5; /* Indigo 600 */
+        }
+    </style>
+    <!-- Chosen Palette: Slate (Background/Text) + Indigo (Primary Action/Highlight) + Emerald (Success/Values) + Amber (Warning/Undefined) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Title and brief context setting.
+         2. Concept Cards: 4-column grid explaining Core Concepts (GEC, FEC, Phases, Stack) for "Inform" goal.
+         3. Interactive Execution Engine: The core feature. A dashboard layout.
+            - Left Col: The Source Code (Interactive List).
+            - Center Col: The Visualizer (Memory Heap & Call Stack representation).
+            - Right Col: "Stack Depth Metrics" (Chart.js) to show the LIFO nature quantitatively.
+         4. Phase Comparison: A toggle-able view comparing Creation vs. Execution phases directly.
+         5. Summary: Footer takeaways.
+         User Flow: User reads concepts -> Steps through the code execution (Next/Prev) -> Watches Stack/Memory update -> Observes Chart changes.
+    -->
+    <!-- Visualization & Content Choices:
+         1. Concept Cards: HTML Grid. Simple, digestible text chunks from Section 1 & 2 of report.
+         2. Execution Visualizer: 
+            - Code: HTML List.
+            - Memory: Styled HTML Boxes (Global/Local) updating via JS. Represents the "Environment".
+            - Call Stack: Flexbox column (reverse) to mimic a stack. Elements are pushed/popped visually.
+            - Rationale: Direct mapping of the "Visual Flow" in the report.
+         3. Stack Metrics Chart: Line Chart (Chart.js). Y-axis = Stack Depth, X-axis = Step. 
+            - Goal: Visualize the "Push" and "Pop" dynamics over time. 
+            - Justification: Adds a quantitative layer to the logical explanation.
+         4. Phase Table: HTML Table. From Section 5 of report.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+    <!-- Navigation / Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-bold text-indigo-600">JS Engine</span>
+                <span class="text-slate-400">|</span>
+                <span class="text-sm font-medium text-slate-500 uppercase tracking-wide">Execution Context Visualizer</span>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <button onclick="scrollToSection('concepts')" class="text-slate-600 hover:text-indigo-600 transition-colors text-sm font-medium">Concepts</button>
+                <button onclick="scrollToSection('visualizer')" class="text-slate-600 hover:text-indigo-600 transition-colors text-sm font-medium">Interactive Demo</button>
+                <button onclick="scrollToSection('comparison')" class="text-slate-600 hover:text-indigo-600 transition-colors text-sm font-medium">Phases</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- Intro Section -->
+        <section class="text-center max-w-3xl mx-auto fade-in">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-6 leading-tight">
+                How JavaScript Runs Your Code
+            </h1>
+            <p class="text-lg text-slate-600 leading-relaxed">
+                When you run JavaScript, the engine builds an environment called the <span class="font-semibold text-indigo-600">Execution Context</span>. Explore the two phases of execution, the memory heap, and the Call Stack below.
+            </p>
+        </section>
+
+        <!-- Concept Cards (Grid) -->
+        <section id="concepts" class="scroll-mt-24">
+            <div class="mb-6 border-l-4 border-indigo-500 pl-4">
+                <h2 class="text-2xl font-bold text-slate-900">Core Concepts</h2>
+                <p class="text-slate-500">The building blocks of the JavaScript runtime.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="text-indigo-500 mb-3 text-xl font-bold">&#10022; Global Context</div>
+                    <h3 class="font-bold text-slate-900 mb-2">GEC</h3>
+                    <p class="text-sm text-slate-600">The default environment created when your script starts. There is only <strong>one</strong> Global Execution Context.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="text-emerald-500 mb-3 text-xl font-bold">&#10036; Function Context</div>
+                    <h3 class="font-bold text-slate-900 mb-2">FEC</h3>
+                    <p class="text-sm text-slate-600">Created <strong>every time</strong> a function is invoked. Each call gets its own brand-new context with private memory.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="text-amber-500 mb-3 text-xl font-bold">&#9881; Two Phases</div>
+                    <h3 class="font-bold text-slate-900 mb-2">Create & Execute</h3>
+                    <p class="text-sm text-slate-600">First, memory is allocated (Hoisting). Then, code runs line-by-line assigning values and executing logic.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="text-rose-500 mb-3 text-xl font-bold">&#9776; Call Stack</div>
+                    <h3 class="font-bold text-slate-900 mb-2">LIFO Principle</h3>
+                    <p class="text-sm text-slate-600">Last In, First Out. Functions are <strong>pushed</strong> when called and <strong>popped</strong> when they return.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Visualizer -->
+        <section id="visualizer" class="scroll-mt-24 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="bg-slate-50 border-b border-slate-200 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Execution Engine Visualizer</h2>
+                    <p class="text-slate-500 text-sm mt-1">Step through the addition function flow (From Report Section 4)</p>
+                </div>
+                <div class="flex items-center gap-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm">
+                    <button id="prevBtn" class="px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" onclick="prevStep()">&#8592; Previous</button>
+                    <span id="stepIndicator" class="text-sm font-mono font-bold text-indigo-600 w-20 text-center">Step 0/13</span>
+                    <button id="nextBtn" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" onclick="nextStep()">Next &#8594;</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+                
+                <!-- Left: Code -->
+                <div class="lg:col-span-4 p-6 bg-slate-50">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Source Code</h3>
+                    <div class="bg-white rounded-lg border border-slate-200 p-4 font-mono text-sm overflow-hidden shadow-inner">
+                        <ol class="list-decimal list-inside space-y-2 text-slate-400" id="codeDisplay">
+                            <!-- Populated by JS -->
+                        </ol>
+                    </div>
+                    <div id="instructionPanel" class="mt-6 p-4 bg-indigo-50 border border-indigo-100 rounded-lg">
+                        <h4 class="text-indigo-900 font-semibold mb-1 text-sm">Current Operation:</h4>
+                        <p id="instructionText" class="text-indigo-700 text-sm">Click 'Next' to start the script execution.</p>
+                    </div>
+                </div>
+
+                <!-- Center: Visual Representation -->
+                <div class="lg:col-span-5 p-6 bg-slate-50 relative">
+                    
+                    <!-- Call Stack Visual -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-end mb-2">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Call Stack (LIFO)</h3>
+                            <span class="text-xs text-slate-400">Top of Stack</span>
+                        </div>
+                        <div id="stackContainer" class="bg-slate-200 rounded-lg p-4 min-h-[200px] flex flex-col-reverse gap-2 border-inner shadow-inner relative">
+                            <!-- Stack items injected here -->
+                            <div class="absolute inset-0 flex items-center justify-center text-slate-400 text-xs pointer-events-none opacity-50">Empty Stack</div>
+                        </div>
+                    </div>
+
+                    <!-- Memory Heap Visual -->
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Memory Heap</h3>
+                        <div class="space-y-4">
+                            <!-- Global Memory -->
+                            <div class="bg-white rounded-lg border border-slate-200 p-4 shadow-sm relative overflow-hidden transition-all duration-300" id="globalMemoryBox">
+                                <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                                <h4 class="text-xs font-bold text-indigo-600 mb-2">Global Execution Context</h4>
+                                <ul class="space-y-1 text-sm font-mono" id="globalMemoryList">
+                                    <li>result: <span class="text-slate-300">not defined</span></li>
+                                    <li>add: <span class="text-slate-300">not defined</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Function Memory (Conditional) -->
+                            <div class="bg-white rounded-lg border border-slate-200 p-4 shadow-sm relative overflow-hidden transition-all duration-300 opacity-50" id="localMemoryBox">
+                                <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+                                <h4 class="text-xs font-bold text-emerald-600 mb-2">Function 'add' Context</h4>
+                                <ul class="space-y-1 text-sm font-mono" id="localMemoryList">
+                                    <li class="text-slate-400 italic">Context not active</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Metrics -->
+                <div class="lg:col-span-3 p-6 bg-white flex flex-col">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Stack Depth Analysis</h3>
+                    <p class="text-sm text-slate-500 mb-4">
+                        Visualizing the "Push" and "Pop" operations over time.
+                    </p>
+                    <div class="chart-container flex-grow">
+                        <canvas id="stackChart"></canvas>
+                    </div>
+                    <div class="mt-4 p-3 bg-slate-50 rounded border border-slate-100 text-xs text-slate-500">
+                        <strong>Insight:</strong> Notice how the stack depth increases when <code>add()</code> is called and decreases immediately after <code>return</code>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase Comparison Table -->
+        <section id="comparison" class="scroll-mt-24">
+            <div class="mb-6 border-l-4 border-emerald-500 pl-4">
+                <h2 class="text-2xl font-bold text-slate-900">Creation vs. Execution</h2>
+                <p class="text-slate-500">Understanding the difference between the two phases.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200">
+                                <th class="p-4 text-sm font-bold text-slate-600">Feature</th>
+                                <th class="p-4 text-sm font-bold text-indigo-600">Phase 1: Memory Creation</th>
+                                <th class="p-4 text-sm font-bold text-emerald-600">Phase 2: Code Execution</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-sm">
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-semibold text-slate-700">Variables</td>
+                                <td class="p-4 text-slate-600">Allocated memory. <code>var</code> set to <span class="bg-amber-100 text-amber-800 px-1 rounded text-xs font-mono">undefined</span>.</td>
+                                <td class="p-4 text-slate-600">Assigned actual values (e.g., <span class="bg-emerald-100 text-emerald-800 px-1 rounded text-xs font-mono">5</span>, <span class="bg-emerald-100 text-emerald-800 px-1 rounded text-xs font-mono">"hello"</span>).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-semibold text-slate-700">Functions</td>
+                                <td class="p-4 text-slate-600">Entire function code is stored in memory.</td>
+                                <td class="p-4 text-slate-600">Function logic runs if invoked.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-semibold text-slate-700">Stack Activity</td>
+                                <td class="p-4 text-slate-600">Context is Pushed (prepared).</td>
+                                <td class="p-4 text-slate-600">Logic is processed within the context.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="p-4 font-semibold text-slate-700">Analogy</td>
+                                <td class="p-4 text-slate-600">"Planning / Setup"</td>
+                                <td class="p-4 text-slate-600">"Doing / Action"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-white text-lg font-bold mb-4">Summary</h2>
+            <p class="max-w-2xl mx-auto mb-8">
+                The JavaScript engine manages complexity through Execution Contexts. By separating Memory Creation from Execution and using a Call Stack, it ensures orderly, single-threaded processing of your code.
+            </p>
+            <div class="text-xs text-slate-600">
+                Generated based on Source Report: "Deep Dive: JavaScript Execution Context & Call Stack"
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA & STATE ---
+        const codeLines = [
+            "var result;",
+            "",
+            "function add(a, b) {",
+            "    var sum = a + b;",
+            "    return sum;",
+            "}",
+            "",
+            "result = add(2, 3);",
+            "console.log(result);"
+        ];
+
+        // Based on the report's "Visual Flow" logic
+        // Steps mapping:
+        // 0: Start
+        // 1: Create GEC (Alloc Phase)
+        // 2: Push GEC
+        // 3: Alloc Phase details (result=undef, add=func)
+        // 4: Exec Line 1 (Wait, line 1 is var declaration, so nothing happens in exec phase really, but conceptually we pass it)
+        // 5: Exec Line 8 (Call add)
+        // 6: Create FEC add
+        // 7: Push FEC add
+        // 8: Alloc Phase add (a, b, sum)
+        // 9: Exec Line 4 (sum = a + b)
+        // 10: Exec Line 5 (Return)
+        // 11: Pop FEC add
+        // 12: Back in GEC, assign result
+        // 13: Exec Line 9 (Log)
+        
+        const flowSteps = [
+            {
+                id: 0,
+                line: -1,
+                desc: "Script Start. Engine prepares the environment.",
+                stack: [],
+                memGlobal: { result: "...", add: "..." },
+                memLocal: null,
+                stackHeight: 0
+            },
+            {
+                id: 1,
+                line: -1,
+                desc: "<b>Phase 1: Memory Creation (GEC)</b>. The engine creates the Global Execution Context.",
+                stack: ["Global Execution Context"],
+                memGlobal: { result: "...", add: "..." },
+                memLocal: null,
+                stackHeight: 1
+            },
+            {
+                id: 2,
+                line: -1,
+                desc: "<b>Push GEC</b>. The Global Context is pushed onto the Call Stack.",
+                stack: ["Global Execution Context"],
+                memGlobal: { result: "undefined", add: "fn(){...}" },
+                memLocal: null,
+                stackHeight: 1
+            },
+            {
+                id: 3,
+                line: 0,
+                desc: "<b>Scanning...</b> Variable 'result' is hoisted as undefined. Function 'add' is stored fully.",
+                stack: ["Global Execution Context"],
+                memGlobal: { result: "undefined", add: "fn(){...}" },
+                memLocal: null,
+                stackHeight: 1
+            },
+            {
+                id: 4,
+                line: 7,
+                desc: "<b>Phase 2: Code Execution</b>. We reach line 8. Calling <code>add(2, 3)</code>.",
+                stack: ["Global Execution Context"],
+                memGlobal: { result: "undefined", add: "fn(){...}" },
+                memLocal: null,
+                stackHeight: 1
+            },
+            {
+                id: 5,
+                line: 2,
+                desc: "<b>Create FEC</b>. A new Function Execution Context is created for 'add'.",
+                stack: ["Global Execution Context"],
+                memGlobal: { result: "undefined", add: "fn(){...}" },
+                memLocal: { a: "...", b: "...", sum: "..." },
+                stackHeight: 1
+            },
+            {
+                id: 6,
+                line: 2,
+                desc: "<b>Push FEC</b>. The 'add' context is pushed to the top of the stack.",
+                stack: ["Global Execution Context", "add() Context"],
+                memGlobal: { result: "undefined", add: "fn(){...}" },
+                memLocal: { a: "undefined", b: "undefined", sum: "undefined" },
+                stackHeight: 2
+            },
+            {
+                id: 7,
+                line: 2,
+                desc: "<b>Memory Phase (add)</b>. Arguments are mapped. Local variables hoisted.",
+                stack: ["Global Execution Context", "add() Context"],
+                memGlobal: { result: "undefined", add: "fn(){...}" },
+                memLocal: { a: "2", b: "3", sum: "undefined" },
+                stackHeight: 2
+            },
+            {
+                id: 8,
+                line: 3,
+                desc: "<b>Execution (add)</b>. Calculating <code>sum = 2 + 3</code>.",
+                stack: ["Global Execution Context", "add() Context"],
+                memGlobal: { result: "undefined", add: "fn(){...}" },
+                memLocal: { a: "2", b: "3", sum: "5" },
+                stackHeight: 2
+            },
+            {
+                id: 9,
+                line: 4,
+                desc: "<b>Return</b>. The function returns 5. Context is preparing to pop.",
+                stack: ["Global Execution Context", "add() Context"],
+                memGlobal: { result: "undefined", add: "fn(){...}" },
+                memLocal: { a: "2", b: "3", sum: "5" },
+                stackHeight: 2
+            },
+            {
+                id: 10,
+                line: 7,
+                desc: "<b>Pop FEC</b>. 'add' finishes. Control returns to GEC. Memory for 'add' is garbage collected.",
+                stack: ["Global Execution Context"],
+                memGlobal: { result: "5", add: "fn(){...}" },
+                memLocal: null,
+                stackHeight: 1
+            },
+            {
+                id: 11,
+                line: 8,
+                desc: "<b>Console Log</b>. Printing result. Script ends.",
+                stack: ["Global Execution Context"],
+                memGlobal: { result: "5", add: "fn(){...}" },
+                memLocal: null,
+                stackHeight: 1
+            },
+            {
+                id: 12,
+                line: -1,
+                desc: "<b>Empty Stack</b>. All contexts popped (eventually).",
+                stack: [],
+                memGlobal: { result: "5", add: "fn(){...}" },
+                memLocal: null,
+                stackHeight: 0
+            }
+        ];
+
+        let currentStep = 0;
+        let chartInstance = null;
+
+        // --- DOM ELEMENTS ---
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const stepIndicator = document.getElementById('stepIndicator');
+        const codeDisplay = document.getElementById('codeDisplay');
+        const instructionText = document.getElementById('instructionText');
+        const stackContainer = document.getElementById('stackContainer');
+        const globalMemoryBox = document.getElementById('globalMemoryBox');
+        const globalMemoryList = document.getElementById('globalMemoryList');
+        const localMemoryBox = document.getElementById('localMemoryBox');
+        const localMemoryList = document.getElementById('localMemoryList');
+
+        // --- INITIALIZATION ---
+        function init() {
+            renderCode();
+            renderChart();
+            updateUI();
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderCode() {
+            codeDisplay.innerHTML = codeLines.map((line, index) => {
+                return `<li id="line-${index}" class="py-1 px-2 rounded border-l-4 border-transparent text-slate-500 transition-all duration-200">${line || '&nbsp;'}</li>`;
+            }).join('');
+        }
+
+        function highlightLine(lineIndex) {
+            // clear all
+            document.querySelectorAll('#codeDisplay li').forEach(li => {
+                li.classList.remove('highlight-line', 'text-slate-900', 'font-bold');
+                li.classList.add('text-slate-500');
+            });
+            
+            if (lineIndex >= 0) {
+                const el = document.getElementById(`line-${lineIndex}`);
+                if (el) {
+                    el.classList.add('highlight-line', 'text-slate-900', 'font-bold');
+                    el.classList.remove('text-slate-500');
+                }
+            }
+        }
+
+        function renderStack(stackItems) {
+            stackContainer.innerHTML = '';
+            if (stackItems.length === 0) {
+                stackContainer.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-slate-400 text-xs pointer-events-none opacity-50">Empty Stack</div>';
+                return;
+            }
+
+            stackItems.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `p-3 rounded font-bold text-center text-sm shadow-sm border border-slate-300 slide-up ${index === stackItems.length - 1 ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-white text-slate-600'}`;
+                div.innerHTML = item;
+                // Prepend so visualization looks like a stack (bottom up in column-reverse flex)
+                stackContainer.appendChild(div); 
+            });
+        }
+
+        function updateMemory(global, local) {
+            // Update Global
+            let globalHtml = '';
+            for (const [key, val] of Object.entries(global)) {
+                const colorClass = val === 'undefined' ? 'text-amber-600' : (val === '...' ? 'text-slate-300' : 'text-emerald-600 font-bold');
+                globalHtml += `<li class="flex justify-between border-b border-slate-100 last:border-0 py-1"><span>${key}</span> <span class="${colorClass}">${val}</span></li>`;
+            }
+            globalMemoryList.innerHTML = globalHtml;
+
+            // Update Local
+            if (local) {
+                localMemoryBox.classList.remove('opacity-50', 'grayscale');
+                localMemoryBox.classList.add('ring-2', 'ring-emerald-100');
+                let localHtml = '';
+                for (const [key, val] of Object.entries(local)) {
+                    const colorClass = val === 'undefined' ? 'text-amber-600' : (val === '...' ? 'text-slate-300' : 'text-emerald-600 font-bold');
+                    localHtml += `<li class="flex justify-between border-b border-slate-100 last:border-0 py-1"><span>${key}</span> <span class="${colorClass}">${val}</span></li>`;
+                }
+                localMemoryList.innerHTML = localHtml;
+            } else {
+                localMemoryBox.classList.add('opacity-50', 'grayscale');
+                localMemoryBox.classList.remove('ring-2', 'ring-emerald-100');
+                localMemoryList.innerHTML = '<li class="text-slate-400 italic py-1">Context not active</li>';
+            }
+        }
+
+        // --- CHART JS ---
+        function renderChart() {
+            const ctx = document.getElementById('stackChart').getContext('2d');
+            
+            // Prepare initial data (all steps, but only populate up to current)
+            const labels = flowSteps.map(s => `Step ${s.id}`);
+            const data = flowSteps.map((s, i) => i === 0 ? 0 : null); // Start with 0
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Stack Height',
+                        data: data,
+                        borderColor: '#4f46e5', // Indigo 600
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#4f46e5'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 3,
+                            ticks: {
+                                stepSize: 1,
+                                precision: 0
+                            },
+                            title: {
+                                display: true,
+                                text: 'Contexts in Stack'
+                            }
+                        },
+                        x: {
+                            display: false 
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Height: ${context.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart(stepIndex) {
+            // Update data array up to current step
+            const newData = flowSteps.map((s, i) => {
+                if (i <= stepIndex) return s.stackHeight;
+                return null;
+            });
+            chartInstance.data.datasets[0].data = newData;
+            
+            // Highlight current point
+            const pointColors = newData.map((val, i) => i === stepIndex ? '#059669' : '#4f46e5'); // Emerald for current
+            const pointRadii = newData.map((val, i) => i === stepIndex ? 6 : 4);
+
+            chartInstance.data.datasets[0].pointBorderColor = pointColors;
+            chartInstance.data.datasets[0].pointRadius = pointRadii;
+
+            chartInstance.update();
+        }
+
+        // --- CONTROLS ---
+        function updateUI() {
+            const stepData = flowSteps[currentStep];
+
+            // 1. Step Indicator
+            stepIndicator.textContent = `Step ${currentStep}/${flowSteps.length - 1}`;
+            
+            // 2. Buttons
+            prevBtn.disabled = currentStep === 0;
+            nextBtn.disabled = currentStep === flowSteps.length - 1;
+
+            // 3. Instruction
+            instructionText.innerHTML = stepData.desc;
+
+            // 4. Highlight Code
+            highlightLine(stepData.line);
+
+            // 5. Stack
+            renderStack(stepData.stack);
+
+            // 6. Memory
+            updateMemory(stepData.memGlobal, stepData.memLocal);
+
+            // 7. Chart
+            updateChart(currentStep);
+        }
+
+        function nextStep() {
+            if (currentStep < flowSteps.length - 1) {
+                currentStep++;
+                updateUI();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateUI();
+            }
+        }
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>
