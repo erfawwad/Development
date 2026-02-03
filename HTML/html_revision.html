@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 Mastery Revision Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        :root {
+            --html-orange: #e34f26;
+            --html-bg: #fff5f2;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fcfcfc;
+            color: #1e293b;
+        }
+
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            border-color: var(--html-orange);
+            box-shadow: 0 10px 25px -5px rgba(227, 79, 38, 0.1);
+        }
+
+        .tag-badge {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .category-title {
+            border-left: 4px solid var(--html-orange);
+            padding-left: 1rem;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+
+    <!-- Header -->
+    <header class="max-w-5xl mx-auto mb-16 text-center">
+        <div class="inline-block p-4 bg-[#e34f2615] rounded-2xl mb-6">
+            <i class="fab fa-html5 text-7xl text-[#e34f26]"></i>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight">HTML5 Mastery Guide</h1>
+        <p class="text-lg text-slate-500 max-w-2xl mx-auto">
+            The fundamental building blocks of the web. A comprehensive roadmap from basic syntax to semantic SEO and accessibility.
+        </p>
+    </header>
+
+    <div class="max-w-5xl mx-auto space-y-10">
+
+        <!-- 1. Document Structure -->
+        <section class="section-card p-8">
+            <h2 class="category-title text-2xl font-bold mb-6">1. Boilerplate & Meta Tags</h2>
+            <p class="text-slate-600 mb-4 text-sm">Every HTML document starts with this essential structure to define character encoding and responsiveness.</p>
+            <div class="bg-slate-900 rounded-xl p-5 mb-6 overflow-x-auto">
+                <pre class="code-font text-blue-300 text-sm">
+&lt;!DOCTYPE html&gt; <span class="text-slate-500">&lt;!-- Tells browser we are using HTML5 --&gt;</span>
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt; <span class="text-slate-500">&lt;!-- Supports almost all characters --&gt;</span>
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Page Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    <span class="text-slate-500">&lt;!-- Content goes here --&gt;</span>
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+            </div>
+        </section>
+
+        <!-- 2. Semantic HTML -->
+        <section class="section-card p-8">
+            <h2 class="category-title text-2xl font-bold mb-6">2. Semantic Elements (SEO & Accessibility)</h2>
+            <p class="text-slate-600 mb-6">Stop using <code class="tag-badge">&lt;div&gt;</code> for everything. Semantic tags tell the browser and screen readers what the content <strong>is</strong>.</p>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <span class="tag-badge mb-2 inline-block">&lt;header&gt;</span>
+                    <p class="text-xs text-slate-500">Introductory content or navigation links.</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <span class="tag-badge mb-2 inline-block">&lt;nav&gt;</span>
+                    <p class="text-xs text-slate-500">Navigation blocks (menus, sidebars).</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <span class="tag-badge mb-2 inline-block">&lt;main&gt;</span>
+                    <p class="text-xs text-slate-500">The primary content of the document.</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <span class="tag-badge mb-2 inline-block">&lt;section&gt;</span>
+                    <p class="text-xs text-slate-500">Thematic grouping of content, usually with a heading.</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <span class="tag-badge mb-2 inline-block">&lt;article&gt;</span>
+                    <p class="text-xs text-slate-500">Self-contained content (blog post, news story).</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <span class="tag-badge mb-2 inline-block">&lt;aside&gt;</span>
+                    <p class="text-xs text-slate-500">Content indirectly related to the main content (sidebar).</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <span class="tag-badge mb-2 inline-block">&lt;footer&gt;</span>
+                    <p class="text-xs text-slate-500">Contact info, copyrights, or sitemaps.</p>
+                </div>
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <span class="tag-badge mb-2 inline-block">&lt;figure&gt;</span>
+                    <p class="text-xs text-slate-500">Self-contained content, like photos with <code class="tag-badge">&lt;figcaption&gt;</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Text & Content -->
+        <section class="section-card p-8">
+            <h2 class="category-title text-2xl font-bold mb-6">3. Text Formatting & Hierarchy</h2>
+            <div class="space-y-6">
+                <div>
+                    <h4 class="font-semibold text-slate-800 mb-2">Headings</h4>
+                    <p class="text-sm text-slate-500 mb-3">Use <code>&lt;h1&gt;</code> only once per page. Use <code>&lt;h2&gt;</code> through <code>&lt;h6&gt;</code> for sub-levels.</p>
+                </div>
+                <hr>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-slate-800 mb-2">Block vs. Inline</h4>
+                        <ul class="text-sm space-y-2">
+                            <li class="flex items-center gap-2"><i class="fas fa-cube text-blue-500"></i> <strong>Block:</strong> p, div, h1, ul, li (Takes full width)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-minus text-orange-500"></i> <strong>Inline:</strong> span, a, strong, em, img (Takes only needed width)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-slate-800 mb-2">Lists</h4>
+                        <p class="text-xs text-slate-500 mb-2">Unordered (<code class="tag-badge">ul</code>), Ordered (<code class="tag-badge">ol</code>), and Description (<code class="tag-badge">dl</code>).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Links & Multimedia -->
+        <section class="section-card p-8">
+            <h2 class="category-title text-2xl font-bold mb-6">4. Links, Images & Media</h2>
+            <div class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-bold text-slate-700 mb-3">Hyperlinks</h4>
+                        <div class="bg-slate-50 p-4 rounded-lg text-sm border font-mono">
+                            &lt;a href="url" target="_blank" rel="noopener"&gt;Link&lt;/a&gt;
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2">Use <code class="text-blue-600">rel="noopener"</code> for security with <code class="text-blue-600">target="_blank"</code>.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-700 mb-3">Images (Responsive)</h4>
+                        <div class="bg-slate-50 p-4 rounded-lg text-sm border font-mono">
+                            &lt;img src="path" alt="Descriptive text" loading="lazy"&gt;
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2"><code class="text-blue-600">alt</code> is mandatory for accessibility. <code class="text-blue-600">loading="lazy"</code> improves performance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Forms -->
+        <section class="section-card p-8 bg-slate-50 border-dashed border-2">
+            <h2 class="category-title text-2xl font-bold mb-6">5. Form Elements & Attributes</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-slate-800 mb-3">Input Types</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag-badge">text</span>
+                        <span class="tag-badge">password</span>
+                        <span class="tag-badge">email</span>
+                        <span class="tag-badge">number</span>
+                        <span class="tag-badge">checkbox</span>
+                        <span class="tag-badge">radio</span>
+                        <span class="tag-badge">date</span>
+                        <span class="tag-badge">file</span>
+                        <span class="tag-badge">range</span>
+                        <span class="tag-badge">color</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-slate-800 mb-3">Validation Attributes</h4>
+                    <ul class="text-xs space-y-1">
+                        <li><code>required</code> - Field must be filled</li>
+                        <li><code>minlength</code> / <code>maxlength</code> - Text length</li>
+                        <li><code>min</code> / <code>max</code> - Numeric range</li>
+                        <li><code>pattern</code> - RegEx validation</li>
+                        <li><code>placeholder</code> - Hint text</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-6 p-4 bg-white rounded-lg border">
+                <p class="text-sm font-bold text-slate-800 mb-2">Best Practice: Labels</p>
+                <p class="text-xs text-slate-500">Always wrap or link labels using the <code>for</code> and <code>id</code> attributes to increase click area and help screen readers.</p>
+            </div>
+        </section>
+
+        <!-- 6. Accessibility (a11y) -->
+        <section class="section-card p-8 border-l-4 border-l-green-500">
+            <h2 class="category-title text-2xl font-bold mb-6">6. Accessibility (ARIA)</h2>
+            <p class="text-sm text-slate-600 mb-4">When semantic HTML isn't enough, use ARIA (Accessible Rich Internet Applications) attributes.</p>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="p-3 bg-green-50 rounded border border-green-100 text-xs">
+                    <strong>role="..."</strong> - Defines what an element is (e.g., <code>role="button"</code>).
+                </div>
+                <div class="p-3 bg-green-50 rounded border border-green-100 text-xs">
+                    <strong>aria-label="..."</strong> - Provides a string for screen readers if no text is visible.
+                </div>
+                <div class="p-3 bg-green-50 rounded border border-green-100 text-xs">
+                    <strong>aria-hidden="true"</strong> - Hides decorative elements from screen readers.
+                </div>
+                <div class="p-3 bg-green-50 rounded border border-green-100 text-xs">
+                    <strong>aria-expanded="..."</strong> - Indicates if a menu or accordion is open.
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Quick Reference Table -->
+    <section class="max-w-5xl mx-auto mt-12 bg-slate-900 rounded-2xl p-8 text-white">
+        <h3 class="text-xl font-bold mb-6">Attributes Summary</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead>
+                    <tr class="border-b border-slate-700">
+                        <th class="py-3">Attribute</th>
+                        <th class="py-3">Element</th>
+                        <th class="py-3">Purpose</th>
+                    </tr>
+                </thead>
+                <tbody class="text-slate-400">
+                    <tr class="border-b border-slate-800">
+                        <td class="py-2 text-blue-400">href</td>
+                        <td>&lt;a&gt;, &lt;link&gt;</td>
+                        <td>Target URL / Resource</td>
+                    </tr>
+                    <tr class="border-b border-slate-800">
+                        <td class="py-2 text-blue-400">src</td>
+                        <td>&lt;img&gt;, &lt;script&gt;, &lt;video&gt;</td>
+                        <td>Source path</td>
+                    </tr>
+                    <tr class="border-b border-slate-800">
+                        <td class="py-2 text-blue-400">alt</td>
+                        <td>&lt;img&gt;, &lt;area&gt;</td>
+                        <td>Alternative text</td>
+                    </tr>
+                    <tr class="border-b border-slate-800">
+                        <td class="py-2 text-blue-400">title</td>
+                        <td>Global</td>
+                        <td>Tooltip information</td>
+                    </tr>
+                    <tr class="border-b border-slate-800">
+                        <td class="py-2 text-blue-400">class / id</td>
+                        <td>Global</td>
+                        <td>CSS/JS Targeting</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer class="max-w-5xl mx-auto py-12 text-center text-slate-400 text-sm">
+        Built for HTML Revision | 2024 Mastery
+    </footer>
+
+</body>
+</html>
