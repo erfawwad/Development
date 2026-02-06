@@ -55,3 +55,6 @@ Question: How do you correctly check if an object is empty in JavaScript, withou
 Answer: To correctly check if an object is empty, you can use Object.keys() to get an array of its own enumerable property names, and then check the length of that array.
 
 Example: if (Object.keys(myObject).length === 0)
+
+
+##################################################
