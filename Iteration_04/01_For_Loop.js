@@ -104,3 +104,20 @@ for (let i = 1; i <= 10; i++) {
 }
 
 
+// Example 11: Using For Loop with Arrays - Find the largest number in an array
+const numArray = [10, 5, 20, 15, 30];
+let largest = numArray[0];
+
+for (let i = 1; i < numArray.length; i++) {
+    if (numArray[i] > largest) {
+        largest = numArray[i];
+    }
+
+}
+
+console.log("The largest number is: " + largest);
+
+
+
+
+
