@@ -138,3 +138,14 @@ myCoding.forEach((item) => {
 console.log(item.languageName); // Prints: javascript, java, python
 console.log(item.languageFileName); // Prints: js, java, py
 });
+
+
+//###### Additional for...of and for...in examples (not in the video) ######
+
+// for...of with an array of strings
+const myArray = ["flash", "batman", "superman"];
+
+for (const element of myArray) {
+console.log(element); // Prints: flash, batman, superman
+}
+
