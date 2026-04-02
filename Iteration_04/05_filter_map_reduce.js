@@ -1,6 +1,7 @@
 //The video provides various JavaScript code snippets to demonstrate forEach, filter, map, and reduce methods.
 
 //Here are the code snippets from the lecture:
+//
 
 //forEach loop example (0:40-2:32):
 //javascript
